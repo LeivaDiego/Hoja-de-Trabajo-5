@@ -20,6 +20,19 @@ CPU_Cores = 1
 Time_of_Execution = 0
 Time_List = []
 
+def ProcessBuilder():
+    print("xd")
+
+def Process(env,id,cpu,ram):
+    Start_Time = 0.0
+    Finish_Time = 0.0
+    Process_Completed = False
+    Memory_Qty = rnd.randint(1,10)
+    Intructions_Qty = rnd.randint(1,10)
+
+
+
+
 #Simulacion
 rnd.seed(Random_Seed)
 env = smp.Environment()
