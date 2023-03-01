@@ -31,6 +31,7 @@ def process_builder(env, cpu, ram):
     for i in range(Process_Qty):
         des_process = process_sim(env, i, cpu, ram)
         env.process(des_process)
+        # Creación de procesos con distribución exponencial
         creation_delay = rnd.expovariate(1.0 / Interval)
         yield env.timeout(creation_delay)
 
