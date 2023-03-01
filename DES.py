@@ -70,7 +70,7 @@ def process_sim(env, id, cpu, ram):
             yield env.timeout(CPU_Speed)
             print("RUNNING")
             print(f'Proceso: {id}')
-            print(f'Ejecutándose en: {env.now}\n')
+            print(f'Ejecutandose en: {env.now}\n')
             # Reducción de las 3 instrucciones que ejecutó en esta oportunidad
             instructions_qty -= Instructions_per_Cycle
         # Evento TERMINATED, cuando el proceso ya no tiene instrucciones por realizar
@@ -111,6 +111,6 @@ environment.run()
 
 # Cálculo de estadísticas
 Average_Running_Time = stats.mean(Time_List)
-print(f'El promedio de ejecución de los Procesos es de: {Average_Running_Time}\n')
+print(f'El promedio de ejecucion de los Procesos es de: {Average_Running_Time}\n')
 Standard_Deviation = stats.stdev(Time_List)
-print(f'La desviación estándar de los tiempos de ejecución es: {Standard_Deviation}')
+print(f'La desviacion estandar de los tiempos de ejecucion es: {Standard_Deviation}')
