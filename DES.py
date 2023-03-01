@@ -25,13 +25,16 @@ Time_of_Execution = 0.0  # Tiempo que tomo la ejecución de un proceso
 Time_List = []  # Listado con los tiempos de ejecución de los procesos simulados
 
 
-def process_builder():
-    print("xd")
+# Instancia de método encargado de fabricar los diferentes procesos a realizar
+def process_builder(env, cpu, ram):
+    for i in range(Process_Qty):
+        des_process = process_sim(env, i, cpu, ram)
+        env.process(des_process)
+        creation_delay = rnd.expovariate(1.0 / Interval)
+        yield env.timeout(creation_delay)
 
 
-'''Instancia de método encargado de realizar los diferentes eventos para un proceso'''
-
-
+# Instancia de método encargado de realizar los diferentes eventos para un proceso
 def process_sim(env, id, cpu, ram):
     # Condiciones iniciales del proceso
     start_time = 0.0  # Tiempo de la simulación en que inicio el proceso
@@ -68,7 +71,7 @@ def process_sim(env, id, cpu, ram):
             print(f'Ejecutándose en: {env.now}\n')
             # Reducción de las 3 instrucciones que ejecutó en esta oportunidad
             instructions_qty -= Instructions_per_Cycle
-            #Evento TERMINATED, cuando el proceso ya no tiene instrucciones por realizar
+            # Evento TERMINATED, cuando el proceso ya no tiene instrucciones por realizar
             if instructions_qty <= 0:
                 with cpu.request() as req:
                     yield req
@@ -80,9 +83,9 @@ def process_sim(env, id, cpu, ram):
                     print(f'Finalizado en: {env.now}\n')
                     finish_time = env.now
                     Time_List.append(finish_time - start_time)
-            #Evento WAITING, cuando el proceso aún tiene instrucciones por realizar
+            # Evento WAITING, cuando el proceso aún tiene instrucciones por realizar
             else:
-                wait = rnd.randint(1,2)
+                wait = rnd.randint(1, 2)
                 if wait == 1:
                     with cpu.request() as req:
                         yield req
