@@ -72,31 +72,31 @@ def process_sim(env, id, cpu, ram):
             # Reducción de las 3 instrucciones que ejecutó en esta oportunidad
             instructions_qty -= Instructions_per_Cycle
             # Evento TERMINATED, cuando el proceso ya no tiene instrucciones por realizar
-            if instructions_qty <= 0:
+        if instructions_qty <= 0:
+            with cpu.request() as req:
+                yield req
+                yield env.timeout(CPU_Speed)
+                ram.put(memory_qty)
+                process_completed = True
+                print("TERMINATED")
+                print(f'Proceso: {id}')
+                print(f'Finalizado en: {env.now}\n')
+                finish_time = env.now
+                Time_List.append(finish_time - start_time)
+        # Evento WAITING, cuando el proceso aún tiene instrucciones por realizar
+        else:
+            wait = rnd.randint(1, 2)
+            if wait == 1:
                 with cpu.request() as req:
                     yield req
                     yield env.timeout(CPU_Speed)
                     ram.put(memory_qty)
-                    process_completed = True
-                    print("TERMINATED")
+                    print("WAITING")
                     print(f'Proceso: {id}')
-                    print(f'Finalizado en: {env.now}\n')
-                    finish_time = env.now
-                    Time_List.append(finish_time - start_time)
-            # Evento WAITING, cuando el proceso aún tiene instrucciones por realizar
+                    print(f'En espera en: {env.now}')
+                    print(f'Cantidad de Instrucciones: {instructions_qty}\n')
             else:
-                wait = rnd.randint(1, 2)
-                if wait == 1:
-                    with cpu.request() as req:
-                        yield req
-                        yield env.timeout(CPU_Speed)
-                        ram.put(memory_qty)
-                        print("WAITING")
-                        print(f'Proceso: {id}')
-                        print(f'En espera en: {env.now}')
-                        print(f'Cantidad de Instrucciones: {instructions_qty}\n')
-                else:
-                    ram.put(memory_qty)
+                ram.put(memory_qty)
 
 
 # Simulación
@@ -104,3 +104,5 @@ rnd.seed(Random_Seed)
 environment = smp.Environment()
 CPU = smp.Resource(environment, capacity=CPU_Cores)
 RAM = smp.Container(environment, init=RAM_Capacity, capacity=RAM_Capacity)
+environment.process(process_builder(environment, CPU, RAM))
+environment.run()
