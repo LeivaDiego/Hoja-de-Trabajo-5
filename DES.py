@@ -21,7 +21,7 @@ CPU_Speed = 1  # Cantidad de procesos que se atienden por unidad de tiempo
 Instructions_per_Cycle = 3  # Cantidad de instucciones que el cpu completa en un tiempo limitado
 
 # Información de simulación
-Time_of_Execution = 0  # Tiempo que tomo la ejecución de un proceso
+Time_of_Execution = 0.0  # Tiempo que tomo la ejecución de un proceso
 Time_List = []  # Listado con los tiempos de ejecución de los procesos simulados
 
 
@@ -68,6 +68,32 @@ def process_sim(env, id, cpu, ram):
             print(f'Ejecutándose en: {env.now}\n')
             # Reducción de las 3 instrucciones que ejecutó en esta oportunidad
             instructions_qty -= Instructions_per_Cycle
+            #Evento TERMINATED, cuando el proceso ya no tiene instrucciones por realizar
+            if instructions_qty <= 0:
+                with cpu.request() as req:
+                    yield req
+                    yield env.timeout(CPU_Speed)
+                    ram.put(memory_qty)
+                    process_completed = True
+                    print("TERMINATED")
+                    print(f'Proceso: {id}')
+                    print(f'Finalizado en: {env.now}\n')
+                    finish_time = env.now
+                    Time_List.append(finish_time - start_time)
+            #Evento WAITING, cuando el proceso aún tiene instrucciones por realizar
+            else:
+                wait = rnd.randint(1,2)
+                if wait == 1:
+                    with cpu.request() as req:
+                        yield req
+                        yield env.timeout(CPU_Speed)
+                        ram.put(memory_qty)
+                        print("WAITING")
+                        print(f'Proceso: {id}')
+                        print(f'En espera en: {env.now}')
+                        print(f'Cantidad de Instrucciones: {instructions_qty}\n')
+                else:
+                    ram.put(memory_qty)
 
 
 # Simulación
