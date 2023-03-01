@@ -10,14 +10,18 @@ import random as rnd
 import simpy as smp
 
 #Parametro de Simulacion
-processQty = 25
-randomSeed = 2912
-interval = 5
-capacity = 1
-processors = 1
-
+Random_Seed = 2912
+Process_Qty = 25
+Interval = 5
+RAM_Capacity = 100
+CPU_Cores = 1
 
 #Informacion de simulacion
-executionTime = 0
-timesList = []
+Time_of_Execution = 0
+Time_List = []
 
+#Simulacion
+rnd.seed(Random_Seed)
+env = smp.Environment()
+cpu = smp.Resource(env, capacity=CPU_Cores)
+ram = smp.Container(env, init=RAM_Capacity,capacity=RAM_Capacity)
