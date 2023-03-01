@@ -14,8 +14,8 @@ import statistics as stats
 
 # Parámetro de Simulación
 Random_Seed = 2912  # Semilla para la generación de números al azar
-Process_Qty = 200      # Cantidad de procesos a simular
-Interval = 10  # Intervalo para la creación de procesos
+Process_Qty = 25      # Cantidad de procesos a simular
+Interval = 1  # Intervalo para la creación de procesos
 RAM_Capacity = 100  # Cantidad de Memoria RAM de la computadora
 CPU_Cores = 1  # Cantidad de procesadores
 CPU_Speed = 1  # Cantidad de procesos que se atienden por unidad de tiempo
