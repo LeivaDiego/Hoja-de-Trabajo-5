@@ -17,6 +17,8 @@ Process_Qty = 25  # Cantidad de procesos a simular
 Interval = 10  # Intervalo para la creación de procesos
 RAM_Capacity = 100  # Cantidad de Memoria RAM de la computadora
 CPU_Cores = 1  # Cantidad de procesadores
+CPU_Speed = 1  # Cantidad de procesos que se atienden por unidad de tiempo
+Instructions_per_Cycle = 3  # Cantidad de instucciones que el cpu completa en un tiempo limitado
 
 # Información de simulación
 Time_of_Execution = 0  # Tiempo que tomo la ejecución de un proceso
@@ -47,16 +49,25 @@ def process_sim(env, id, cpu, ram):
 
     # Ciclo que permite realizar las instrucciones del proceso hasta que este termine
     while not process_completed:
+        # Evento READY, cuando el proceso está listo para correr
         with cpu.request() as req:
             yield req
-            yield env.timeout(1)
+            yield env.timeout(CPU_Speed)
             yield ram.get(memory_qty)
-
-            # Evento READY, cuando el proceso está listo para correr
             print("READY")
             print(f'Proceso: {id}')
             print(f'Listo para ejecutarse en: {env.now}')
             print(f'Cantidad de Instrucciones: {instructions_qty}\n')
+
+        # Evento RUNNING, cuando el proceso se está ejecutando
+        with cpu.request() as req:
+            yield req
+            yield env.timeout(CPU_Speed)
+            print("RUNNING")
+            print(f'Proceso: {id}')
+            print(f'Ejecutándose en: {env.now}\n')
+            # Reducción de las 3 instrucciones que ejecutó en esta oportunidad
+            instructions_qty -= Instructions_per_Cycle
 
 
 # Simulación
