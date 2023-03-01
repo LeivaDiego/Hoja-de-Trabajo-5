@@ -10,6 +10,7 @@ Referencia de ejemplos de Malonso-UVG
 
 import random as rnd
 import simpy as smp
+import statistics as stats
 
 # Parámetro de Simulación
 Random_Seed = 2912  # Semilla para la generación de números al azar
@@ -71,7 +72,7 @@ def process_sim(env, id, cpu, ram):
             print(f'Ejecutándose en: {env.now}\n')
             # Reducción de las 3 instrucciones que ejecutó en esta oportunidad
             instructions_qty -= Instructions_per_Cycle
-            # Evento TERMINATED, cuando el proceso ya no tiene instrucciones por realizar
+        # Evento TERMINATED, cuando el proceso ya no tiene instrucciones por realizar
         if instructions_qty <= 0:
             with cpu.request() as req:
                 yield req
@@ -106,3 +107,9 @@ CPU = smp.Resource(environment, capacity=CPU_Cores)
 RAM = smp.Container(environment, init=RAM_Capacity, capacity=RAM_Capacity)
 environment.process(process_builder(environment, CPU, RAM))
 environment.run()
+
+# Cálculo de estadísticas
+Average_Running_Time = stats.mean(Time_List)
+print(f'El promedio de ejecución de los Procesos es de: {Average_Running_Time}\n')
+Standard_Deviation = stats.stdev(Time_List)
+print(f'La desviación estándar de los tiempos de ejecución es: {Standard_Deviation}')
